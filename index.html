@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolutor de Ecuaciones Cuadráticas</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header id="app-header">
+        <div class="header-inner">
+            <a href="#" class="logo-group">
+                <img src="Logo.png" alt="Logo" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-title">Ecuaciones Cuadráticas</span>
+                    <span class="logo-subtitle">Matemáticas 10º Grado</span>
+                </div>
+            </a>
+            <button id="theme-toggle" aria-label="Cambiar tema">
+                <!-- Sun Icon -->
+                <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <!-- Moon Icon -->
+                <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main id="app-main">
+        <!-- Left Panel: Inputs -->
+        <section class="panel-input">
+            <!-- Equation Preview -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Ecuación</h2>
+                </div>
+                <div id="eq-preview"></div>
+            </div>
+
+            <!-- Coefficients -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Coeficientes</h2>
+                </div>
+                <div class="coefficients-grid">
+                    <!-- Coeff A -->
+                    <div id="coeff-group-a" class="coeff-group">
+                        <label class="coeff-label-text" for="coeff-a">
+                            <span class="coeff-name">a</span>
+                            <span class="coeff-desc">Coeficiente cuadrático (a &ne; 0)</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="coeff-a" placeholder="Ej. 1" step="any" required>
+                            <span class="input-suffix">x²</span>
+                        </div>
+                        <div id="a-error" class="error-msg hidden">
+                            <span>El coeficiente 'a' no puede ser cero.</span>
+                        </div>
+                    </div>
+
+                    <!-- Coeff B -->
+                    <div class="coeff-group">
+                        <label class="coeff-label-text" for="coeff-b">
+                            <span class="coeff-name">b</span>
+                            <span class="coeff-desc">Coeficiente lineal</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="coeff-b" placeholder="Ej. -5" step="any">
+                            <span class="input-suffix">x</span>
+                        </div>
+                    </div>
+
+                    <!-- Coeff C -->
+                    <div class="coeff-group">
+                        <label class="coeff-label-text" for="coeff-c">
+                            <span class="coeff-name">c</span>
+                            <span class="coeff-desc">Término independiente</span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="coeff-c" placeholder="Ej. 6" step="any">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Method Selector -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Método de resolución</h2>
+                </div>
+                <div class="method-tabs" role="tablist">
+                    <button class="method-tab active" data-method="general" role="tab" aria-selected="true">
+                        <span class="method-icon">&fnof;</span>
+                        <span>Fórmula General</span>
+                    </button>
+                    <button class="method-tab" data-method="poshen" role="tab" aria-selected="false">
+                        <span class="method-icon">P</span>
+                        <span>Po-Shen Loh</span>
+                    </button>
+                    <button class="method-tab" data-method="factorization" role="tab" aria-selected="false">
+                        <span class="method-icon">(x)</span>
+                        <span>Factorización</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Solve Button -->
+            <button id="solve-btn" class="btn-solve">
+                <span>Resolver Ecuación</span>
+            </button>
+        </section>
+
+        <!-- Right Panel: Results -->
+        <section class="panel-results">
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state">
+                <div class="empty-icon">📊</div>
+                <p>Ingresa los coeficientes de la ecuación cuadrática y haz clic en <strong>Resolver Ecuación</strong> para ver las propiedades, el procedimiento detallado y la gráfica interactiva.</p>
+            </div>
+
+            <!-- Info Card -->
+            <div id="info-card" class="card result-card hidden">
+                <div class="card-header">
+                    <h2>Propiedades de la función</h2>
+                    <span id="eq-type-badge" class="badge">Completa</span>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Vértice V(h, k)</span>
+                        <div id="info-vertex" class="info-value"></div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Eje de simetría</span>
+                        <div id="info-axis" class="info-value"></div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Intersección con Y</span>
+                        <div id="info-y-intercept" class="info-value"></div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Raíces (Soluciones)</span>
+                        <div id="info-roots" class="info-value"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Steps Card -->
+            <div id="steps-card" class="card result-card hidden">
+                <div class="card-header">
+                    <h2>Procedimiento Paso a Paso</h2>
+                    <span id="method-badge" class="badge badge-info">Fórmula General</span>
+                </div>
+                <div id="steps-container" class="steps-container"></div>
+            </div>
+
+            <!-- Chart Card -->
+            <div id="chart-card" class="card result-card hidden">
+                <div class="card-header">
+                    <h2>Representación Gráfica</h2>
+                    <div class="chart-legend-info">
+                        <span style="--c: var(--accent);" class="legend-dot"></span> Parábola
+                        <span style="--c: var(--coral);" class="legend-dot"></span> Vértice
+                        <span style="--c: var(--teal);" class="legend-dot"></span> Intersección Y
+                        <span style="--c: var(--amber);" class="legend-dot"></span> Raíces
+                    </div>
+                </div>
+                <div id="complex-notice" class="complex-notice hidden">
+                    La ecuación tiene raíces complejas. La parábola no corta el eje X en el plano real.
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="quadratic-chart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/math.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
